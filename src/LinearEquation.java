@@ -1,19 +1,33 @@
 public class LinearEquation {
-    private final double X1;
-    private final double Y1;
-    private final double X2;
-    private final double Y2;
-    private double yIntercept = yIntercept();
-    private double slope = slope();
+    private final int X1;
+    private final int Y1;
+    private final int X2;
+    private final int Y2;
+    private String sign = "+ ";
+    private double yInterceptDouble;
+    private double yInterceptDoublePrint;
+    private double slopeDouble;
+    private int yIntercept;
+    private int yInterceptPrint;
+    private int slope;
 
     // PRECONDITION: X2 != X1
-    public LinearEquation(double X1, double Y1, double X2, double Y2) {
+    public LinearEquation(int X1, int Y1, int X2, int Y2) {
         this.X1 = X1;
         this.Y1 = Y1;
         this.X2 = X2;
         this.Y2 = Y2;
+        yInterceptDouble = yIntercept();
+        slopeDouble = slope();
+        yIntercept = (int)yInterceptDouble;
+        slope = (int) slopeDouble;
+        yInterceptDoublePrint =yInterceptDouble;
+        yInterceptPrint = yIntercept;
     }
 
+    private boolean isInt(double num) {
+        return num - (int)num == 0;
+    }
     private double roundedToHundredth(double toRound) {
         toRound *= 100;
         toRound = (int)toRound;
@@ -26,7 +40,6 @@ public class LinearEquation {
         return roundedToHundredth(Math.sqrt(Math.pow(distX, 2) + Math.pow(distY, 2)));
     }
     public double slope() {
-        double slope;
         double run = X2 - X1;
         double rise = Y2 - Y1;
         if (!(run == 0)) {
@@ -44,19 +57,106 @@ public class LinearEquation {
         return Y1 - (X1 * slope());
     }
     public String equation() {
-        if (slope == 0.0) {
-            return "y = " + slope;
+        if (errorCheck()) {
+            return "x = " + X1;
         }
-        return "y = " + slope + "x " + "+ " + yIntercept;
+        if (yIntercept() < 0) {
+            sign = "- ";
+            yIntercept *= -1;
+            yInterceptDouble *= -1;
+        }
+        if (slope() == 0 && yIntercept() == 0) {
+            return "y = 0";
+        } else if (slope() == 1 && yIntercept() == 0) {
+            return "y = x";
+        }
+        if (isInt(slope())){
+            if (isInt(yIntercept())) {
+                if (slope() == 0) {
+                    return "y = " + yIntercept;
+                } else if (slope() == 1) {
+                    return "y = x " + sign + yIntercept;
+                } else if (yIntercept() == 0) {
+                    return "y = " + slope + "x";
+                }
+                return "y = " + slope + "x " + sign + yIntercept;
+            } else {
+                if (slope() == 0) {
+                    return "y = " + yInterceptDouble;
+                } else if (slope() == 1) {
+                    return "y = x " + sign + yInterceptDouble;
+                } else if (yIntercept() == 0) {
+                    return "y = " + slope + "x";
+                }
+                return "y = " + slope + "x " + sign + yInterceptDouble;
+            }
+        } else {
+            if (isInt(yIntercept())) {
+                if (slope() == 0) {
+                    return "y = " + yIntercept;
+                } else if (slope() == 1) {
+                    return "y = x " + sign + yIntercept;
+                } else if (yIntercept() == 0) {
+                    return "y = " + slopeDouble + "x";
+                }
+                return "y = " + slopeDouble + "x " + sign + yIntercept;
+            } else {
+                if (slope() == 0) {
+                    return "y = " + yInterceptDouble;
+                } else if (slope() == 1) {
+                    return "y = x " + sign + yInterceptDouble;
+                } else if (yIntercept() == 0) {
+                    return "y = " + slopeDouble + "x";
+                }
+                return "y = " + slopeDouble + "x " + sign + yInterceptDouble;
+            }
+        }
+
     }
     public String coordinateForX(double x) {
-        return "(" + x + ", " + ((slope * x) + yIntercept) + ")";
+        if (isInt(x)) {
+            if (isInt((slope() * x) + yIntercept())) {
+                return "(" + (int)x + ", " + (int)((slope() * x) + yIntercept()) + ")";
+            } else {
+                return "(" + (int)x + ", " + ((slope() * x) + yIntercept()) + ")";
+            }
+        } else {
+            if (isInt((slope() * x) + yIntercept())) {
+                return "(" + x + ", " + (int)((slope() * x) + yIntercept()) + ")";
+            } else {
+                return "(" + x + ", " + ((slope() * x) + yIntercept()) + ")";
+            }
+        }
     }
     public String lineInfo() {
-        return "The two points are: " + "(" + X1 + ", " + Y1 + ")" + " and " + "(" + X2 + ", " + Y2 + ")" + " \n" +
-        "The equation of the line between these points is: " + equation() + " \n" +
-        "The slope of this line is: " + slope + " \n" +
-        "The y-intercept of this line " + yIntercept + " \n" +
-        "The distance between these points is " + distance();
+        if (isInt(slope())) {
+            if (isInt(yIntercept())) {
+                return "The two points are: " + "(" + X1 + ", " + Y1 + ")" + " and " + "(" + X2 + ", " + Y2 + ")" + " \n" +
+                        "The equation of the line between these points is: " + equation() + " \n" +
+                        "The slope of this line is: " + slope + " \n" +
+                        "The y-intercept of this line is: " + yInterceptPrint + " \n" +
+                        "The distance between these points is " + distance();
+            } else {
+                return "The two points are: " + "(" + X1 + ", " + Y1 + ")" + " and " + "(" + X2 + ", " + Y2 + ")" + " \n" +
+                        "The equation of the line between these points is: " + equation() + " \n" +
+                        "The slope of this line is: " + slope + " \n" +
+                        "The y-intercept of this line is: " + yInterceptDoublePrint + " \n" +
+                        "The distance between these points is " + distance();
+            }
+        } else {
+            if (isInt(yIntercept())) {
+                return "The two points are: " + "(" + X1 + ", " + Y1 + ")" + " and " + "(" + X2 + ", " + Y2 + ")" + " \n" +
+                        "The equation of the line between these points is: " + equation() + " \n" +
+                        "The slope of this line is: " + slopeDouble + " \n" +
+                        "The y-intercept of this line is: " + yInterceptPrint + " \n" +
+                        "The distance between these points is " + distance();
+            } else {
+                return "The two points are: " + "(" + X1 + ", " + Y1 + ")" + " and " + "(" + X2 + ", " + Y2 + ")" + " \n" +
+                        "The equation of the line between these points is: " + equation() + " \n" +
+                        "The slope of this line is: " + slopeDouble + " \n" +
+                        "The y-intercept of this line is: " + yInterceptDoublePrint + " \n" +
+                        "The distance between these points is " + distance();
+            }
+        }
     }
 }
